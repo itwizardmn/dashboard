@@ -64,11 +64,32 @@
 				</tbody>
 			</table>
 
-      <el-dialog
+      <!-- <el-dialog
         title="Засварлах"
         :visible.sync="dialog.edit"
         width="30%">
         <div style="padding: 0px 30px;">
+          
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialog.edit = false">Болих</el-button>
+          <el-button @click="update">Хадгалах</el-button>
+        </span>
+      </el-dialog> -->
+
+
+			<el-dialog title="Бүтээгдэхүүн" :visible.sync="dialog.edit">
+      <el-row :gutter="20">
+        <el-col :sm="24" :md="12">
+          <div class="img-container">
+            <img :src="$imgUrl + selected.photo" alt="" style="width: 100%; height: 100%; object-fit: cover;" @error="replaceByDefault">
+            <div class="change-avatar" @click="$refs.avatar_upload.click()">
+              <input type="file" ref="avatar_upload" hidden @change="changePhoto">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96s-43 96-96 96z"/></svg>
+            </div>
+          </div>
+        </el-col>
+        <el-col :sm="24" :md="12">
           <el-select v-model="selected.pro_seq" placeholder="Мэргэжил" style="width: 100%;">
             <el-option
               v-for="item in professions"
@@ -97,12 +118,13 @@
           </el-select>
 
           <el-input-number v-model="selected.sort" :min="1" :max="10000" style="width: 100%; margin-top: 10px;"></el-input-number>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dialog.edit = false">Болих</el-button>
-          <el-button @click="update">Хадгалах</el-button>
-        </span>
-      </el-dialog>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+				<el-button @click="dialog.edit = false">Болих</el-button>
+        <el-button type="primary" @click="update">Хадгалах</el-button>
+      </span>
+    </el-dialog>
     </vue-scroll>
 	</vue-scroll>
 </template>
@@ -123,9 +145,11 @@ export default {
        pro_seq: '',
        team_seq: '',
        sort: 0,
-			 levels: ''
+			 levels: '',
+			 photo: ''
       },
-			levels: ['Trainee', 'Junior', 'Mid Level', 'Senior']
+			levels: ['Trainee', 'Junior', 'Mid Level', 'Senior'],
+			selectedFile: ''
 		}
 	},
   created() {
@@ -135,6 +159,32 @@ export default {
   },
 	mounted() {},
 	methods: {
+		changePhoto(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+			console.log(file);
+      this.selectedFile = file;
+      // this.pageLoading = true;
+      const fd = new FormData();
+      fd.append('image', this.selectedFile, this.selectedFile.name);
+      fd.append('data', JSON.stringify({seq: this.selected.seq, file_seq: this.selected.photo}));
+      this.$axios.post(
+        '/a1/update-photo',
+        fd
+      ).then(data => {
+        this.selected.photo = data.data.data;        
+        this.getEmployee();
+        event.target.value = '';
+				console.log(data);
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+		replaceByDefault(e) {
+      e.currentTarget.src = require('@/assets/images/no-user.png');
+    },
     async update() {
 			const data = await this.$useapi('PUT', '/a1/update-employee', { info : this.selected }); 
 			if (data) {
@@ -155,7 +205,8 @@ export default {
         pro_seq: item.pro_seq,
         team_seq: item.team_seq,
         sort: item.sort,
-				levels: item.levels
+				levels: item.levels,
+				photo: item.photo
       };
       this.dialog.edit = true;
     },
@@ -188,6 +239,37 @@ export default {
 @import '../assets/scss/_variables';
 @import '../assets/scss/_mixins';
 
+
+.img-container {
+
+  position: relative;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  .change-avatar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    // height: 50%;
+    transition: .5s;
+    height: 0;
+    background: #000;
+    opacity: .5;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+
+    svg {
+      width: 10%;
+      height: auto;
+      fill: #fff;
+    }
+  }
+  &:hover {
+    .change-avatar { height: 70%; }
+  }
+}
 
 .avatar {
   width: 40px;
