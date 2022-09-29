@@ -1,6 +1,6 @@
 ﻿<template>
-	<vue-scroll class="page-ecommerce-dashboard">
-		<vue-scroll class="mt-10 unprinter">
+	<div class="page-ecommerce-dashboard scrollable">
+		<div class="mt-10 unprinter">
 			<div>
         <el-button type="primary" plain class="addProperty" size="mini" @click="addNewPro">Hэмэх</el-button>
       </div>
@@ -45,8 +45,8 @@
 					</tr>
 				</tbody>
 			</table>
-    </vue-scroll>
-	</vue-scroll>
+    </div>
+	</div>
 </template>
 
 <script>

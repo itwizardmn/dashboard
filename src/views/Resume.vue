@@ -1,5 +1,5 @@
 ﻿<template>
-	<vue-scroll class="page-ecommerce-dashboard">
+	<div class="page-ecommerce-dashboard scrollable">
     <!-- <div class="page-invoice printer">
       <div class="invoice bg-white black-text" id="print-html-builder"></div>
     </div> -->
@@ -168,7 +168,7 @@
           </div>
         </section>
     </vue-html2pdf>
-		<vue-scroll class="table-box card-base card-outline mt-20 unprinter">
+		<div class="table-box card-base card-outline mt-20 unprinter">
 			<table class="styled striped hover">
 				<thead>
 					<tr>
@@ -242,9 +242,6 @@
               <hr>			
 
               <div class="invoice-middle" v-if="selectedResume">
-                <!-- <div class="clientlogo">
-                  <img src="@/assets/images/avatar.jpg" alt="client logo">
-                </div> -->
                 <div class="info">
                   <h2>{{selectedResume.firstname}} {{selectedResume.lastname}}</h2>
                   <p>{{selectedResume.register}}<br> {{selectedResume.email}}<br>{{selectedResume.phone}}</p>
@@ -362,8 +359,8 @@
                   </thead>
                   <tbody v-if="selectedResume">
                     <tr>
-                      <td width="50%">{{JSON.parse(selectedResume.personal).advantage}}</td>
-                      <td width="50%">{{JSON.parse(selectedResume.personal).disadvantage}}</td>
+                      <td width="50%" v-html="JSON.parse(selectedResume.personal).advantage"></td>
+                      <td width="50%" v-html="JSON.parse(selectedResume.personal).disadvantage"></td>
                     </tr>
                   </tbody>
                 </table>              
@@ -413,8 +410,8 @@
           <el-button type="primary" :loading="loading.change" @click="submitResume">Үргэлжлүүлэх</el-button>
         </span>
       </el-dialog>
-    </vue-scroll>
-	</vue-scroll>
+    </div>
+	</div>
 </template>
 
 <script>
@@ -534,6 +531,8 @@ export default {
     },
     showProperty(property) {      
       this.selectedResume = property;
+      console.log(this.selectedResume.personal, this.selectedResume);
+
       this.dialog.resume = true;
     }
 	}

@@ -1,5 +1,5 @@
 ﻿<template>
-	<vue-scroll class="page-ecommerce-dashboard">
+	<div class="page-ecommerce-dashboard scrollable">
 
 		<resize-observer @notify="__resizeHanlder" />
 
@@ -140,7 +140,7 @@
 			</table>
         </vue-scroll>
 	
-	</vue-scroll>
+	</div>
 </template>
 
 <script>

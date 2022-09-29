@@ -1,6 +1,6 @@
 ﻿<template>
-	<vue-scroll class="page-ecommerce-dashboard">
-		<vue-scroll class="mt-10 unprinter">
+	<div class="scrollable page-ecommerce-dashboard">
+		<div class="mt-10 unprinter">
 			<div>
         <router-link to="/add-career"><el-button type="primary" plain class="addProperty" size="mini">Hэмэх</el-button></router-link>
       </div>
@@ -41,8 +41,8 @@
 					</tr>
 				</tbody>
 			</table>
-    </vue-scroll>
-	</vue-scroll>
+    </div>
+	</div>
 </template>
 
 <script>
