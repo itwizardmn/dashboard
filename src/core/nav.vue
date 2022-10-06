@@ -43,6 +43,11 @@
 		<el-menu-item index="/career">
 			<i class="mdi mdi-bullhorn-outline"></i><span>Ажлын зар</span>
 		</el-menu-item>
+		<el-menu-item index="/feedback">
+			<!-- <i class="mdi mdi-bullhorn-outline"></i> -->
+			<i class="el-icon-warning-outline"></i>
+			<span>Санал хүсэлт</span>
+		</el-menu-item>
 	</el-menu>	
 </template>
 

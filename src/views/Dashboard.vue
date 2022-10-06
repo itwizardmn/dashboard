@@ -4,84 +4,109 @@
 		<resize-observer @notify="__resizeHanlder" />
 
 		<div class="card-base card-alt">
-			<el-row :gutter="30">
-				<el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-					<div class="widget p-20">
-						<div class="text-uppercase text-right flex">
-							<div class="box grow">
-								<h3 class="m-0">2.384</h3>
-								<p class="m-0">Daily Orders</p>
-							</div>
-							<div class="icon-box ph-15 accent-text">
-								<i class="mdi mdi-cart-outline"></i>
-							</div>
+			<el-row :gutter="30" style="display:flex;justify-content:center;flex-direction:row;align-items:center;">
+				<el-col :sm="24" :md="16">
+					<el-col :span="24">
+						<div>
+							<div id="pie" :style="{height:'700px',width:'100%'}"></div>
 						</div>
-						<div class="progress-box mt-10">
-							<el-progress :percentage="78" class="themed"></el-progress>
-						</div>
-					</div>
+					</el-col>
 				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-					<div class="widget p-20">
-						<div class="text-uppercase text-right flex">
-							<div class="box grow">
-								<h3 class="m-0">7.945,87 $</h3>
-								<p class="m-0">Daily Earnings</p>
+				<el-col :sm="24" :md="8">
+					<el-col :span="24">
+						<div class="widget p-20">
+							<div class="text-uppercase text-right flex">
+								<div class="box grow">
+									<h3 class="m-0 splitWord">{{dashHeader.admins}} people</h3>
+									<p class="m-0 splitWord">Administrator</p>
+								</div>
+								<div class="icon-box ph-15 accent-text">
+									<i class="mdi mdi-currency-usd"></i>
+								</div>
 							</div>
-							<div class="icon-box ph-15 accent-text">
-								<i class="mdi mdi-currency-usd"></i>
-							</div>
-						</div>
-						<div class="progress-box mt-10">
-							<el-progress :percentage="67" class="themed"></el-progress>
-						</div>
-					</div>
-				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-					<div class="widget p-20">
-						<div class="text-uppercase text-right flex">
-							<div class="box grow">
-								<h3 class="m-0">5.760</h3>
-								<p class="m-0">Monthly Sales</p>
-							</div>
-							<div class="icon-box ph-15 accent-text">
-								<i class="mdi mdi-cart-outline"></i>
+							<div class="progress-box mt-10">
+								<el-progress v-if="dashHeader.admins > 0" :percentage="parseInt(dashHeader.admins / employee.length * 100)" class="themed"></el-progress>
+								<el-progress v-else :percentage="0" class="themed"></el-progress>
 							</div>
 						</div>
-						<div class="progress-box mt-10">
-							<el-progress :percentage="23" class="themed"></el-progress>
-						</div>
-					</div>
-				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6">
-					<div class="widget p-20">
-						<div class="text-uppercase text-right flex">
-							<div class="box grow">
-								<h3 class="m-0">68.329,29 $</h3>
-								<p class="m-0">Monthly Earnings</p>
+					</el-col>
+					<el-col :span="24">
+						<div class="widget p-20">
+							<div class="text-uppercase text-right flex">
+								<div class="box grow">
+									<h3 class="m-0 splitWord">{{dashHeader.teamLeader}} people</h3>
+									<p class="m-0 splitWord">Team leader</p>
+								</div>
+								<div class="icon-box ph-15 accent-text">
+									<i class="mdi mdi-account-tie"></i>
+								</div>
 							</div>
-							<div class="icon-box ph-15 accent-text">
-								<i class="mdi mdi-currency-usd"></i>
+							<div class="progress-box mt-10">
+								<el-progress v-if="dashHeader.teamLeader > 0" :percentage="parseInt(dashHeader.teamLeader / employee.length * 100)" class="themed"></el-progress>
+								<el-progress v-else :percentage="0" class="themed"></el-progress>
 							</div>
 						</div>
-						<div class="progress-box mt-10">
-							<el-progress :percentage="37" class="themed"></el-progress>
+					</el-col>
+					<el-col :span="24">
+						<div class="widget p-20">
+							<div class="text-uppercase text-right flex">
+								<div class="box grow">
+									<h3 class="m-0 splitWord">{{dashHeader.proManager}} people</h3>
+									<p class="m-0 splitWord">Pro. Manager</p>
+								</div>
+								<div class="icon-box ph-15 accent-text">
+									<i class="mdi mdi-account-key"></i>
+								</div>
+							</div>
+							<div class="progress-box mt-10">
+								<el-progress v-if="dashHeader.proManager > 0" :percentage="parseInt(dashHeader.proManager / employee.length * 100)" class="themed"></el-progress>
+								<el-progress v-else :percentage="0" class="themed"></el-progress>
+							</div>
 						</div>
-					</div>
+					</el-col>
+					<el-col :span="24">
+						<div class="widget p-20">
+							<div class="text-uppercase text-right flex">
+								<div class="box grow">
+									<h3 class="m-0 splitWord">{{dashHeader.developer}} people</h3>
+									<p class="m-0 splitWord">Developer</p>
+								</div>
+								<div class="icon-box ph-15 accent-text">
+									<i class="mdi mdi-account-group"></i>
+								</div>
+							</div>
+							<div class="progress-box mt-10">
+								<el-progress v-if="dashHeader.developer > 0" :percentage="parseInt(dashHeader.developer / employee.length * 100)" class="themed"></el-progress>
+								<el-progress v-else :percentage="0" class="themed"></el-progress>
+							</div>
+						</div>
+					</el-col>
+					<el-col :span="24">
+						<div class="widget p-20">
+							<div class="text-uppercase text-right flex">
+								<div class="box grow">
+									<h3 class="m-0 splitWord">{{dashHeader.generalStaff}} people</h3>
+									<p class="m-0 splitWord">General staff</p>
+								</div>
+								<div class="icon-box ph-15 accent-text">
+									<i class="mdi mdi-card-account-details"></i>
+								</div>
+							</div>
+							<div class="progress-box mt-10">
+								<el-progress v-if="dashHeader.generalStaff > 0" :percentage="parseInt(dashHeader.generalStaff / employee.length * 100)" class="themed"></el-progress>
+								<el-progress v-else :percentage="0" class="themed"></el-progress>
+							</div>
+						</div>
+					</el-col>
 				</el-col>
 			</el-row>
 		</div>
 
 		<div class="card-base card-shadow--medium bg-white black-text ph-5 p-0 pb-20 mt-20">
 			<el-row>
-				<el-col :xs="24" :sm="12" :md="12" :lg="16" :xl="16">
+				<el-col :span="24">
 					<div>
 						<div id="chart" :style="{height:'500px',width:'100%'}"></div>
-					</div>
-				</el-col>
-				<el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-					<div>
-						<div id="pie" :style="{height:'500px',width:'100%'}"></div>
 					</div>
 				</el-col>
 			</el-row>
@@ -154,15 +179,38 @@ export default {
 		return {
 			chart: null,
 			pie: null,
-			gridData: []
+			gridData: [],
+			employee: [],
+			professions: [],
+			dashHeader: {
+				admins: 0,
+				teamLeader: 0,
+				proManager: 0,
+				developer: 0,
+				generalStaff: 0
+			},
+			levels: {
+				Trainee: 0,
+				Junior: 0,
+				MidLevel: 0,
+				Senior: 0
+			},
+			experience: {
+				level1: 0,
+				level2: 0,
+				level3: 0,
+				level4: 0,
+				level5: 0,
+				level6: 0
+			}
 		}
 	},
 	created() {
+		this.getEmployees();
+		this.getProfession();
 		this.initGridData()
 	},
 	mounted() {
-		this.initChart()
-		this.initPie()
 		window.addEventListener('resize', this.__resizeHanlder)
 	},
 	beforeDestroy() {
@@ -181,6 +229,93 @@ export default {
 		this.pie = null
 	},
 	methods: {
+		getMinYear(exp) {
+			if (!exp) {
+				return 1;
+			}
+			let min = new Date().getFullYear(), now = new Date().getFullYear();
+			const obj = JSON.parse(exp);
+
+			obj.forEach(elm => {
+				let year = new Date(elm.inYear);
+				min > year.getFullYear() ? min = year.getFullYear() : null;
+			});
+
+			return now - min < 1 ? 1 : now - min;
+		},
+		setGroupData() {
+			const dev = ['Вэб хөгжүүлэгч', 'Жава хөгжүүлэгч', 'Ахлах програмист'];
+
+			let emp = 0;
+			this.employee.forEach(elm => {
+				dev.includes(elm.pro_name) ? emp++ : null;
+			});
+
+			const pManager = ['Төслийн менежер'];
+
+			let pmanage = 0;
+			this.employee.forEach(elm => {
+				pManager.includes(elm.pro_name) ? pmanage++ : null;
+			});
+
+			const admin = ['Удирдлагын хэлтсийн дарга', 'Ерөнхий менежер', 'Хуулийн зөвлөх', 'Гүйцэтгэх захирал', 'Ерөнхий захирал', 'Программ хангамж хэлстийн дарга', 'Технологи судалгааны хэлтсийн дарга']
+
+
+			let adm = 0;
+			this.employee.forEach(elm => {
+				admin.includes(elm.pro_name) ? adm++ : null;
+			});
+			
+
+			let leader = 0;
+			this.employee.forEach(elm => {
+				elm.pro_name === 'Багийн ахлагч' ? leader++ : null;
+			});
+
+			let manger = 0;
+			this.employee.forEach(elm => {
+				elm.pro_name === 'Оффис менежер' ? manger++ : null;
+				if (this.levels[elm.levels] || this.levels[elm.levels] === 0) {
+					this.levels[elm.levels] = this.levels[elm.levels] + 1;
+				}
+				const year = this.getMinYear(elm.experience);
+
+				if (year <= 2) {
+					this.experience.level1+=1;
+				} else if(year <= 4) {
+					this.experience.level2+=1;
+				} else if (year <= 6) {
+					this.experience.level3+=1;
+				} else if (year <= 8) {
+					this.experience.level4+=1;
+				} else if (year <= 10) {
+					this.experience.level5+=1;
+				} else if ( year > 10 ) {
+					this.experience.level6+=1;
+				}
+			});
+			
+			this.dashHeader.admins = adm;
+			this.dashHeader.generalStaff = manger;
+			this.dashHeader.teamLeader = leader;
+			this.dashHeader.developer = emp;
+			this.dashHeader.proManager = pmanage;
+		},
+		async getProfession() {
+			const data = await this.$useapi('POST', '/a1/project/get-list', { cont: 'PROFESSION'});
+			if (data) {				
+				this.professions = data.data.data;
+			}
+    },
+		async getEmployees() {
+			const data = await this.$useapi('GET', '/v1/employee/employees');
+			if (data) {
+				this.employee = data.data.data;
+				this.setGroupData();
+				this.initChart();
+				this.initPie();
+			}
+		},
 		__resizeHanlder: _.throttle(function (e) {
 			if (this.chart) {
 				this.chart.resize()
@@ -195,7 +330,7 @@ export default {
 				//backgroundColor: '#394056',
 				title: {
 					top: 20,
-					text: 'SALES STATISTICS',
+					text: 'DEVELOPER EXPERIENCE',
 					textStyle: { fontWeight: 'normal', fontSize: 16, fontFamily:'Nunito Sans' /*color: '#F1F1F3'*/ },
 					left: '1%'
 				},
@@ -209,7 +344,7 @@ export default {
 					itemWidth: 14,
 					itemHeight: 5,
 					itemGap: 13,
-					data: ['Product-A', 'Product-B', 'Product-C'],
+					data: ['개발자 평균 경력'],
 					right: '4%',
 					textStyle: { fontSize: 12, fontFamily:'Nunito Sans' /*color: '#F1F1F3'*/ }
 				},
@@ -224,7 +359,7 @@ export default {
 					type: 'category',
 					boundaryGap: false,
 					axisLine: { lineStyle: { /*color: '#57617B'*/ } },
-					data: ['13:00', '13:05', '13:10', '13:15', '13:20', '13:25', '13:30', '13:35', '13:40', '13:45', '13:50', '13:55']
+					data: ['   1-2 years', '3-4 years', '5-6 years', '7-8 years', '9-10 years', '10+ years']
 				}],
 				yAxis: [{
 					show: false,
@@ -239,7 +374,7 @@ export default {
 					splitLine: { lineStyle: { color: '#eee' /*color: '#57617B'*/ } }
 				}],
 				series: [{
-					name: 'Product-A',
+					name: '개발자 평균 경력',
 					type: 'line',
 					smooth: true,
 					symbol: 'circle',
@@ -266,66 +401,8 @@ export default {
 							borderWidth: 12
 						}
 					},
-					data: [220, 182, 191, 134, 150, 120, 110, 125, 145, 122, 165, 122]
-				}, {
-					name: 'Product-B',
-					type: 'line',
-					smooth: true,
-					symbol: 'circle',
-					symbolSize: 5,
-					showSymbol: false,
-					lineStyle: { normal: { width: 1 } },
-					areaStyle: {
-						normal: {
-							color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-								offset: 0,
-								color: 'rgba(95, 143, 223, 0.3)'
-							}, {
-								offset: 0.8,
-								color: 'rgba(95, 143, 223, 0)'
-							}], false),
-							shadowColor: 'rgba(0, 0, 0, 0.1)',
-							shadowBlur: 10
-						}
-					},
-					itemStyle: {
-						normal: {
-							color: 'rgb(95, 143, 223)',
-							borderColor: 'rgba(95, 143, 223, 0.2)',
-							borderWidth: 12
-						}
-					},
-					data: [120, 110, 125, 145, 122, 165, 122, 220, 182, 191, 134, 150]
-				}, /*{
-					name: 'Product-C',
-					type: 'line',
-					smooth: true,
-					symbol: 'circle',
-					symbolSize: 5,
-					showSymbol: false,
-					lineStyle: { normal: { width: 1 } },
-					areaStyle: {
-						normal: {
-							color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-								offset: 0,
-								color: 'rgba(236, 32, 95, 0.3)'
-							}, {
-								offset: 0.8,
-								color: 'rgba(236, 32, 95, 0)'
-							}], false),
-							shadowColor: 'rgba(0, 0, 0, 0.1)',
-							shadowBlur: 10
-						}
-					},
-					itemStyle: {
-						normal: {
-							color: 'rgb(236, 32, 95)',
-							borderColor: 'rgba(236, 32, 95, 0.2)',
-							borderWidth: 12
-						}
-					},
-					data: [220, 182, 125, 145, 122, 191, 134, 150, 120, 110, 165, 122]
-				}*/]
+					data: [this.experience.level1, this.experience.level2, this.experience.level3, this.experience.level4, this.experience.level5, this.experience.level6]
+				}]
 			})
 		},
 		initPie() {
@@ -333,7 +410,7 @@ export default {
 			this.pie.setOption({
 				title: {
 					top: 20,
-					text: 'ORDER STATUS',
+					text: 'EMPLOYEE STATUS',
 					textStyle: { fontWeight: 'normal', fontSize: 16, fontFamily:'Nunito Sans' /*color: '#F1F1F3'*/ },
 					left: '1%'
 				},
@@ -343,7 +420,7 @@ export default {
 				},
 				series: [
 					{
-						name:'Status',
+						name:'status',
 						type:'pie',
 						selectedMode: 'single',
 						radius: [0, '35%'],
@@ -359,27 +436,24 @@ export default {
 							}
 						},
 						data:[
-							{value:335, name:'Orders', selected:true, itemStyle: { normal: { color: 'rgb(95, 143, 223)', } }},
-							{value:679, name:'Pending', itemStyle: { normal: { color: 'rgb(19, 206, 102)', } }},
-							{value:1548, name:'Delivered', itemStyle: { normal: { color: 'rgb(247, 186, 43)', } }}
+							{value: this.dashHeader.admins, name:'ADMINISTRATOR', selected:true, itemStyle: { normal: { color: 'rgb(95, 143, 223)', } }},
+							{value:this.dashHeader.teamLeader, name:'TEAM LEADER', itemStyle: { normal: { color: 'rgb(19, 206, 102)', } }},
+							{value:this.dashHeader.proManager, name:'PROJECT MANAGER', itemStyle: { normal: { color: 'rgb(247, 186, 43)', } }},
+							{value:this.dashHeader.developer, name:'DEVELOPER', itemStyle: { normal: { color: 'rgb(149, 163, 222)', } }},
+							{value:this.dashHeader.generalStaff, name:'GENERAL STAFF', itemStyle: { normal: { color: 'rgb(184, 58, 222)', } }}
 						],
 					},
 					{
-						name:'Products',
+						name:'개발자 현황',
 						type:'pie',
 						radius: ['45%', '60%'],
 
 						data:[
-							{value:335, name:'p1', itemStyle: { normal: { color: '#3f84f6', } }},
-							{value:310, name:'p2', itemStyle: { normal: { color: '#4c8bf7', } }},
-							{value:234, name:'p3', itemStyle: { normal: { color: '#5a95f7', } }},
-							{value:135, name:'p4', itemStyle: { normal: { color: '#70a3f8', } }},
-							{value:1048, name:'p5', itemStyle: { normal: { color: '#8ab4fa', } }},
-							{value:251, name:'p6', itemStyle: { normal: { color: '#a3c4fb', } }},
-							{value:147, name:'p7', itemStyle: { normal: { color: '#bfd6fc', } }},
-							{value:102, name:'p8', itemStyle: { normal: { color: '#d4e4fd', } }}
+							{value:this.levels.Trainee, name:'초급', itemStyle: { normal: { color: '#3f84f6', } }},
+							{value: this.levels.Junior, name:'중급', itemStyle: { normal: { color: '#4c8bf7', } }},
+							{value: this.levels.MidLevel, name:'고급', itemStyle: { normal: { color: '#5a95f7', } }},
+							{value: this.levels.Senior, name:'특급', itemStyle: { normal: { color: '#70a3f8', } }}
 						],
-
 						itemStyle: {
 							normal: {
 								color: 'rgb(19, 206, 102)',
@@ -422,6 +496,12 @@ export default {
 @import '../assets/scss/_variables';
 
 .page-ecommerce-dashboard {
+
+	.splitWord {
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+	}
 	.widget {
 		.icon-box {
 			font-size: 30px;

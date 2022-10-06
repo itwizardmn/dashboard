@@ -1,8 +1,17 @@
 ﻿<template>
 		<div class="mt-10 unprinter scrollable">
-			<!-- <div>
-        <el-button type="primary" plain class="addProperty" size="mini" @click="addNewPro">Hэмэх</el-button>
-      </div> -->
+			<div>
+				<export-excel
+					class   = "btn btn-default"
+					:data="xlsData"
+					:fields="xlsFields"
+					worksheet = "My Worksheet"
+					:before-generate="beforeDownloadExcel"
+					:title="xlsHeader"
+					name    = "filename.xls">
+				<el-button type="primary" plain class="addProperty" icon="el-icon-download" size="mini">Татах</el-button>
+			</export-excel>
+      </div>
 			<table class="table-box card-base card-outline styled striped hover">
 				<thead>
 					<tr>
@@ -146,8 +155,26 @@ export default {
 			 levels: '',
 			 photo: ''
       },
-			levels: ['Trainee', 'Junior', 'Mid Level', 'Senior'],
-			selectedFile: ''
+			levels: ['Trainee', 'Junior', 'MidLevel', 'Senior'],
+			selectedFile: '',
+			xlsHeader: '<h3 style="text-align: left; background: yellow;">▶ 몽골 개발자 인력 현황</h3>',
+			xlsFields: {
+				'<div style="font-size: 20px; background-color: #D8D8D8; width: 200px; height: 100px;border-style: solid;">번호</div>'				: {field: 'index', callback: (value) => {
+					return `<div style="border: 1px solid grey;">${value}</div>`;
+				}},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">이름</div>'				: {field: 'name', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기술등급</div>'		: {field: 'level', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">업무</div>'				: {field: 'position', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">학력</div>'				: {field: 'education', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">경력</div>'				: {field: 'career', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기술</div>'				: {field: 'technology', callback: (value) => {
+					return `<div style="border: 1px solid grey;">${value}</div>`;
+				}},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">영어</div>'				: {field: 'english', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">한국어</div>'			: {field: 'korean', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기타</div>'				: {field: 'about', width: 500}
+			},
+			xlsData: []
 		}
 	},
   created() {
@@ -157,12 +184,72 @@ export default {
   },
 	mounted() {},
 	methods: {
+		getMinYear(exp) {
+			if (!exp) {
+				return 1;
+			}
+			let min = new Date().getFullYear(), now = new Date().getFullYear();
+			const obj = JSON.parse(exp);
+
+			obj.forEach(elm => {
+				let year = new Date(elm.inYear);
+				min > year.getFullYear() ? min = year.getFullYear() : null;
+			});
+
+			return now - min < 1 ? 1 : now - min;
+		},
+		getProName(seq) {
+			let name = '';
+			this.professions.forEach(element => {
+				element.seq === seq ? name = element.pro_name_ko : null;
+			});
+			return name;
+		},
+		getKorean(lang) {
+			if (!lang) {
+				return 0;
+			}
+
+			let perc = 0;
+			let obj = JSON.parse(lang);
+			obj.forEach(elm => {
+				elm.language === 'Korean' ? perc = elm.percent : null;
+			});
+
+			console.log(perc);
+		},
+		getSkills(skill) {
+			if (!skill) {
+				return '';
+			}
+
+			let str = '';
+			let obj = JSON.parse(skill);
+			obj.forEach(elm => {
+				str += str === '' ? elm.programm : ', ' + elm.programm;
+			});
+			
+			return str;
+		},
+		async beforeDownloadExcel() {
+			this.employee.forEach((elm, index) => {
+				this.getKorean(elm.lang);
+				this.xlsData.push({
+					index: index + 1, 
+					name: elm.name, 
+					level: this.$textApi(elm.levels), 
+					position: this.getProName(elm.pro_seq),
+					career: this.getMinYear(elm.experience) + ' 년',
+					technology: this.getSkills(elm.skill)
+				});
+			});
+		},
 		changePhoto(event) {
       const file = event.target.files[0];
       if (!file) {
         return;
       }
-			console.log(file);
+
       this.selectedFile = file;
       // this.pageLoading = true;
       const fd = new FormData();

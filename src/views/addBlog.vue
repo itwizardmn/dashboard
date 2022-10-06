@@ -29,7 +29,7 @@
             </el-row>
 
             <el-row :gutter="20">
-              <el-col :sm="24" :md="12">
+              <el-col :sm="24" :md="8">
                 <div class="thumbnanil-container" @click="addThumbnail" ref="thumbnailContainer">
                   <input type="file" ref="upload_thumbnail" hidden @change="changePhoto">
                   <div class="selected">
@@ -40,8 +40,18 @@
                   </div>
                 </div>
               </el-col>
-              <el-col :sm="24" :md="12">
+              <el-col :sm="24" :md="8">
                 <el-input placeholder="Бичлэг (Заавал биш)" v-model="career.url" clearable></el-input>
+              </el-col>
+              <el-col :sm="24" :md="8">
+                <el-select v-model="career.lang" placeholder="Хэлний сонголт" style="width: 100%;">
+                  <el-option
+                    v-for="item in language"
+                    :key="item.value"
+                    :label="item.text"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </el-col>
             </el-row>
           </div>
@@ -73,8 +83,10 @@ export default {
           name: ''
         },
         content: '',
-        contentType: 1
+        contentType: 1,
+        lang: 'MN'
       },
+      language: [{value: 'MN', text: 'Монгол'}, {value: 'KR', text: 'Korean'}],
       conType: [
         {
           value: 1,
@@ -147,6 +159,7 @@ export default {
           fd.append('isVisible', this.career.isVisible);
           fd.append('url', this.career.url);
           fd.append('contentType', this.career.contentType);
+          fd.append('lang', this.career.lang);
 
           this.$axios.post(
             '/a1/blog/insert',

@@ -14,6 +14,7 @@ import AddCareer from '../views/addCareer';
 import EditCareer from '../views/EditCareer';
 import Blog from '../views/Blog';
 import addBlog from '../views/addBlog';
+import feedback from '../views/feedback';
 
 Vue.use(Router)
 
@@ -132,6 +133,15 @@ const routes = [
     component: addBlog,
     meta: {
       title: "Блог үүсгэх",
+			layout: layouts.navLeft,
+    }
+  },
+  {
+    path: "/feedback",
+    name: "feedback",
+    component: feedback,
+    meta: {
+      title: "Санал хүсэлт",
 			layout: layouts.navLeft,
     }
   }

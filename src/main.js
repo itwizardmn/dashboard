@@ -81,7 +81,9 @@ import App from './App.vue'
 import router from './router/' 
 import store from './store' 
 import i18n_messages from './i18n.json' 
-import VueHtml2pdf from 'vue-html2pdf'
+import VueHtml2pdf from 'vue-html2pdf';
+import excel from 'vue-excel-export';
+import textApi from '@/assets/js/utils';
 
 
 Vue.config.productionTip = false
@@ -91,6 +93,7 @@ Vue.config.productionTip = false
 |  THIRD PARTS COMPONENTS |
 \* ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ */
 Vue.use(VueTextareaAutosize)
+Vue.use(excel);
 Vue.use(VueMasonry)
 Vue.component('StatusIndicator', StatusIndicator)
 Vue.use(VueChartkick, {adapter: Chart})
@@ -155,8 +158,8 @@ Vue.directive('affix', Affix)
 
 const i18n = new VueI18n({ locale: 'us', messages:i18n_messages });
 
-const url = "http://192.168.0.155:5100";
-const imgUrl = "http://192.168.0.155:5100/v2/common/download/";
+const url = "http://192.168.0.46:5100";
+const imgUrl = "http://192.168.0.46:5100/v2/common/download/";
 axios.defaults.baseURL = url;
 const tkn = localStorage.getItem("token");
 
@@ -183,6 +186,7 @@ Vue.prototype.$appUrl = url;
 Vue.prototype.$imgUrl = imgUrl;
 Vue.prototype.$useapi = useapi;
 Vue.prototype.$axios = axios;
+Vue.prototype.$textApi = textApi;
 
 new Vue({
 	i18n,
