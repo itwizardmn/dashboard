@@ -158,8 +158,12 @@ Vue.directive('affix', Affix)
 
 const i18n = new VueI18n({ locale: 'us', messages:i18n_messages });
 
-const url = "http://192.168.0.46:5100";
-const imgUrl = "http://192.168.0.46:5100/v2/common/download/";
+// const url = "http://192.168.0.46:5100";
+// const imgUrl = "http://192.168.0.46:5100/v2/common/download/";
+
+const url = 'http://api.itwizard.mn';
+const imgUrl = 'http://api.itwizard.mn/v2/common/download/';
+
 axios.defaults.baseURL = url;
 const tkn = localStorage.getItem("token");
 

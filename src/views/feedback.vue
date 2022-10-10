@@ -49,7 +49,7 @@
             <el-tag v-else-if="item.status == 'returned'" size="mini" type="warning">Returned</el-tag>
           </td>
           <td align="right">
-            <el-button type="primary" plain icon="el-icon-edit" :loading="item.loading" size="mini" @click="selectItem(item)"></el-button>
+            <el-button type="primary" plain icon="el-icon-warning" :loading="item.loading" size="mini" @click="selectItem(item)"></el-button>
             <el-popover
               v-bind:class="{'hidden': item.status === 'returned'}"
               placement="top-end"

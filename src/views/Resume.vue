@@ -181,7 +181,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(item, index) in property" :key="index" @click="showProperty(item)">
+					<tr v-for="(item, index) in members" :key="index" @click="showProperty(item)">
 						<td>
 							<div class="item-box item-customer">
 								<h5 class="m-0 o-070">{{item.lastname}}</h5>
@@ -216,6 +216,8 @@
 					</tr>
 				</tbody>
 			</table>
+
+
       <el-dialog title="Анкет дэлгэрэнгүй" :visible.sync="dialog.resume" class="resume">
         <div>
           <div class="page-invoice scrollable">
@@ -411,6 +413,16 @@
         </span>
       </el-dialog>
     </div>
+
+    <el-pagination
+				style="text-align: center;margin-top: 20px;"
+				background
+				:page-size="page.size"
+				:current-page="page.current"
+				@current-change="chnagePaginate"
+				layout="prev, pager, next"
+				:total="property.length">
+			</el-pagination>
 	</div>
 </template>
 
@@ -421,8 +433,23 @@ export default {
     VueHtml2pdf
   },
 	name: 'Resume',
+  computed: {
+		members() {
+			let arr = [];
+      const min = this.page.current - 1;
+      this.property.forEach((elem, index) => {
+        index >= min * this.page.size && index < this.page.current * this.page.size ? arr.push(elem) : null;
+      });
+				
+      return arr;
+		}
+	},
 	data () {
 		return {
+      page: {
+				size: 20,
+				current: 1
+			},
       dialog: {
         resume: false,
         confirm: false
@@ -454,6 +481,9 @@ export default {
   },
 	mounted() {},
 	methods: {
+    chnagePaginate(event) {
+      this.page.current = event;
+    },
     submitResume() {
       if (this.change.status != '') {
         if (this.change.status == 'returned') {
@@ -531,8 +561,6 @@ export default {
     },
     showProperty(property) {      
       this.selectedResume = property;
-      console.log(this.selectedResume.personal, this.selectedResume);
-
       this.dialog.resume = true;
     }
 	}

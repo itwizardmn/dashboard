@@ -20,16 +20,17 @@
             <th>Мэргэжил</th>
             <th>Баг</th>
 						<th>Дараалал</th>
+						<th>Идэвхитэй</th>
             <th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(item, index) in employee" :key="index">
+					<tr v-for="(item, index) in members" :key="index">
 						<td>
 							<div class="item-box item-customer">
                 <!-- <el-avatar shape="square" size="large" :src="$imgUrl + item.profile"></el-avatar> -->
                 <div class="avatar">
-                  <img :src="$imgUrl + item.profile" :alt="'profile' + item.profile" @error="onerror">
+                  <img :src="$imgUrl + item.photo" :alt="'profile' + item.photo" @error="onerror">
                 </div>
 								<!-- <h5 class="m-0 o-070">{{item.profile}}</h5> -->
 							</div>
@@ -54,9 +55,14 @@
 								<h5 class="m-0 o-070">{{item.sort}}</h5>
 							</div>
 						</td>
+						<td>
+							<el-tag v-if="item.use_yn == 'Y'" size="mini" type="success">Y</el-tag>
+            	<el-tag v-else-if="item.use_yn == 'N'" size="mini" type="warning">N</el-tag>
+						</td>
 						<td align="right">
 							<el-button type="primary" plain icon="el-icon-edit" @click="showEditForm(item)" size="mini"></el-button>
 							<el-popover
+								v-if="item.is_deleted === 'N'"
 								placement="top-end"
 								width="160"
 								v-model="item.confirm">
@@ -67,10 +73,33 @@
 								</div>
 								<el-button type="danger" slot="reference" plain icon="el-icon-delete" size="mini" style="margin-left: 10px;"></el-button>
 							</el-popover>
+
+							<el-popover
+								v-if="item.is_deleted === 'Y'"
+								placement="top-end"
+								width="160"
+								v-model="item.confirm">
+								<p>Сэргээх үү?</p>
+								<div style="text-align: right; margin: 0;">
+									<el-button size="mini" type="text" @click="item.confirm = false">Үгүй</el-button>
+									<el-button type="primary" size="mini" @click="recoverPro(item)">Тийм</el-button>
+								</div>
+								<el-button type="warning" slot="reference" plain icon="el-icon-refresh" size="mini" style="margin-left: 10px;"></el-button>
+							</el-popover>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+
+			<el-pagination
+				style="text-align: center;margin-top: 20px;"
+				background
+				:page-size="page.size"
+				:current-page="page.current"
+				@current-change="chnagePaginate"
+				layout="prev, pager, next"
+				:total="employee.length">
+			</el-pagination>
 
       <!-- <el-dialog
         title="Засварлах"
@@ -141,6 +170,10 @@ export default {
 	name: 'Teams',
 	data () {
 		return {
+			page: {
+				size: 20,
+				current: 1
+			},
       employee: [],
       teams: [],
       professions: [],
@@ -182,21 +215,45 @@ export default {
     this.getTeams();
     this.getProfession();
   },
+	computed: {
+		members() {
+			let arr = [];
+      const min = this.page.current - 1;
+      this.employee.forEach((elem, index) => {
+        index >= min * this.page.size && index < this.page.current * this.page.size ? arr.push(elem) : null;
+      });
+				
+      return arr;
+		}
+	},
 	mounted() {},
 	methods: {
+		chnagePaginate(event) {
+      this.page.current = event;
+    },
 		getMinYear(exp) {
 			if (!exp) {
 				return 1;
 			}
-			let min = new Date().getFullYear(), now = new Date().getFullYear();
+
+			let total = 0;
 			const obj = JSON.parse(exp);
 
 			obj.forEach(elm => {
-				let year = new Date(elm.inYear);
-				min > year.getFullYear() ? min = year.getFullYear() : null;
+				let st = new Date(elm.inYear).getFullYear();
+				let end = new Date(elm.outYear).getFullYear();
+				if (!st) {
+					st = new Date().getFullYear();
+				}
+
+				if (!end) {
+					end = new Date().getFullYear();
+				}
+
+				total += end - st;
 			});
 
-			return now - min < 1 ? 1 : now - min;
+			return total;
 		},
 		getProName(seq) {
 			let name = '';
@@ -296,7 +353,7 @@ export default {
       this.dialog.edit = true;
     },
     onerror(event) {
-      event.currentTarget.style.display = 'none';
+      event.currentTarget.src = require('@/assets/images/avatar-3.jpg');
     },
 		async deletePro(item) {
 			const data = await this.$useapi('PUT', '/a1/delete-employee', { seq: item.seq });
@@ -304,8 +361,14 @@ export default {
 				this.getEmployee();
 			}
 		},
+		async recoverPro(item) {
+			const data = await this.$useapi('PUT', '/a1/recover-employee', { seq: item.seq });
+			if (data) {
+				this.getEmployee();
+			}
+		},
     async getEmployee() {
-			const data = await this.$useapi('GET', '/v1/employee/employees');
+			const data = await this.$useapi('GET', '/a1/employees');
 			if (data) {
 				this.employee = data.data.data;
 			}
