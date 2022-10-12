@@ -280,6 +280,7 @@ export default {
         this.pageLoading = false;
         if (data.data.message === 'Success') {
           this.projects = data.data.data;
+          console.log(data.data.data);
         }
       });
     },

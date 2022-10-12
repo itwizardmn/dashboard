@@ -127,7 +127,9 @@
           </div>
         </el-col>
         <el-col :sm="24" :md="12">
-          <el-select v-model="selected.pro_seq" placeholder="Мэргэжил" style="width: 100%;">
+					<el-input v-model="selected.phone" disabled></el-input>
+					<el-input v-model="selected.email" disabled style="width: 100%; margin-top: 10px;"></el-input>
+          <el-select v-model="selected.pro_seq" placeholder="Мэргэжил" style="width: 100%; margin-top: 10px;">
             <el-option
               v-for="item in professions"
               :key="item.seq"
@@ -192,20 +194,20 @@ export default {
 			selectedFile: '',
 			xlsHeader: '<h3 style="text-align: left; background: yellow;">▶ 몽골 개발자 인력 현황</h3>',
 			xlsFields: {
-				'<div style="font-size: 20px; background-color: #D8D8D8; width: 200px; height: 100px;border-style: solid;">번호</div>'				: {field: 'index', callback: (value) => {
+				'<div style="font-size: 20px; background-color: #D8D8D8; width: 200px; height: 100px;border-top: 1px solid black;">번호</div>'				: {field: 'index', callback: (value) => {
 					return `<div style="border: 1px solid grey;">${value}</div>`;
 				}},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">이름</div>'				: {field: 'name', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기술등급</div>'		: {field: 'level', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">업무</div>'				: {field: 'position', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">학력</div>'				: {field: 'education', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">경력</div>'				: {field: 'career', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기술</div>'				: {field: 'technology', callback: (value) => {
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">이름</div>'				: {field: 'name', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">기술등급</div>'		: {field: 'level', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">업무</div>'				: {field: 'position', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">학력</div>'				: {field: 'education', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">경력</div>'				: {field: 'career', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">기술</div>'				: {field: 'technology', callback: (value) => {
 					return `<div style="border: 1px solid grey;">${value}</div>`;
 				}},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">영어</div>'				: {field: 'english', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">한국어</div>'			: {field: 'korean', width: 500},
-				'<div style="font-size: 20px; background: #D8D8D8;border-style: solid;">기타</div>'				: {field: 'about', width: 500}
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">영어</div>'				: {field: 'english', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">한국어</div>'			: {field: 'korean', width: 500},
+				'<div style="font-size: 20px; background: #D8D8D8;border-top: 1px solid black;">기타</div>'				: {field: 'about', width: 500}
 			},
 			xlsData: []
 		}
@@ -253,7 +255,7 @@ export default {
 				total += end - st;
 			});
 
-			return total;
+			return total > 0 ? total : 1;
 		},
 		getProName(seq) {
 			let name = '';
@@ -273,7 +275,36 @@ export default {
 				elm.language === 'Korean' ? perc = elm.percent : null;
 			});
 
-			console.log(perc);
+			if (perc <= 30) {
+				return '초급';
+			} else if (perc <= 60) {
+				return '중급';
+			} else if (perc <= 90) {
+				return '고급';
+			} else {
+				return '특수';
+			}
+		},
+		getEng(lang) {
+			if (!lang) {
+				return 0;
+			}
+
+			let perc = 0;
+			let obj = JSON.parse(lang);
+			obj.forEach(elm => {
+				elm.language === 'English' ? perc = elm.percent : null;
+			});
+
+			if (perc <= 30) {
+				return '초급';
+			} else if (perc <= 60) {
+				return '중급';
+			} else if (perc <= 90) {
+				return '고급';
+			} else {
+				return '특수';
+			}
 		},
 		getSkills(skill) {
 			if (!skill) {
@@ -290,14 +321,15 @@ export default {
 		},
 		async beforeDownloadExcel() {
 			this.employee.forEach((elm, index) => {
-				this.getKorean(elm.lang);
 				this.xlsData.push({
 					index: index + 1, 
 					name: elm.name, 
 					level: this.$textApi(elm.levels), 
 					position: this.getProName(elm.pro_seq),
 					career: this.getMinYear(elm.experience) + ' 년',
-					technology: this.getSkills(elm.skill)
+					technology: this.getSkills(elm.skill),
+					english: this.getEng(elm.lang),
+					korean: this.getKorean(elm.lang)
 				});
 			});
 		},
@@ -348,7 +380,9 @@ export default {
         team_seq: item.team_seq,
         sort: item.sort,
 				levels: item.levels,
-				photo: item.photo
+				photo: item.photo,
+				phone: item.phone,
+				email: item.email
       };
       this.dialog.edit = true;
     },

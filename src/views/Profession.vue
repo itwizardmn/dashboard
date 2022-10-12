@@ -2,12 +2,13 @@
 	<div class="page-ecommerce-dashboard scrollable">
 		<div class="mt-10 unprinter">
 			<div>
-        <el-button type="primary" plain class="addProperty" size="mini" @click="addNewPro">Hэмэх</el-button>
+        <el-button type="primary" plain class="addProperty" size="mini" @click="dialog.addPro = true">Hэмэх</el-button>
       </div>
 			<table class="table-box card-base card-outline styled striped hover">
 				<thead>
 					<tr>
 						<th>Мэргэжил</th>
+						<th>Мэргэжил (Солонгос)</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -17,6 +18,12 @@
 							<div class="item-box item-customer">
 								<h5 class="m-0 o-070" v-if="!item.edit">{{item.pro_name}}</h5>
                 <el-input placeholder="Мэргэжил" v-model="item.pro_name_clone" v-else clearable size="mini"></el-input>
+							</div>
+						</td>
+						<td>
+							<div class="item-box item-customer">
+								<h5 class="m-0 o-070" v-if="!item.edit">{{item.pro_name_ko}}</h5>
+                <el-input placeholder="Мэргэжил (Солонгос)" v-model="item.pro_name_clone_ko" v-else clearable size="mini"></el-input>
 							</div>
 						</td>
 						<td align="right">
@@ -39,6 +46,20 @@
 				</tbody>
 			</table>
     </div>
+
+		<el-dialog
+			title="Бүртгэх"
+			:visible.sync="dialog.addPro"
+			width="30%"
+			center>
+			<el-input v-model="newPro.pro_name" placeholder="Мэргэжил" clearable=""></el-input>
+			<el-input v-model="newPro.ko_name" placeholder="Мэргэжил (Солонгос)" style="margin-top: 10px;" clearable=""></el-input>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialog.addPro = false">Болих</el-button>
+				<el-button type="primary" @click="addNewPro">Хадгалах</el-button>
+			</span>
+		</el-dialog>
+
 	</div>
 </template>
 
@@ -50,6 +71,10 @@ export default {
       professions: [],
 			dialog: {
 				addPro: false
+			},
+			newPro: {
+				pro_name: '',
+				ko_name: ''
 			}
 		}
 	},
@@ -76,37 +101,41 @@ export default {
 			});
 		},
 		addNewPro() {
-			this.$prompt('', 'Мэргэжил бүртгэх', {
-				confirmButtonText: 'Хадгалах',
-				cancelButtonText: 'Болих',
-				inputPattern: /[\w\W]{1,100}/,
-				inputErrorMessage: 'Нэрээ оруулна уу'
-			}).then(({ value }) => {
+			if (this.newPro.pro_name != '' && this.newPro.ko_name) {
 				this.$axios({
-          method: 'post',
-          url: '/a1/add-profession',
-          data: {
-            pro_name: value
-          }
-        }).then(() => {
-          this.getContent();
-        }).catch(err => {
-          console.log(err);
-        });
-			});
+					method: 'post',
+					url: '/a1/add-profession',
+					data: this.newPro
+				}).then(() => {
+					this.getContent();
+					this.dialog.addPro = false;
+				}).catch(err => {
+					console.log(err);
+					this.dialog.addPro = false;
+				});
+			} else {
+				this.$message.error('Oops, Талбараа бүрэн бөглөнө үү.');
+			}
 		},
     update(p) {
-      if (p.pro_name != p.pro_name_clone) {
+			if (p.pro_name_clone == '' || p.pro_name_clone_ko == '') {
+				this.$message.error('Oops, Талбараа бүрэн бөглөнө үү.');
+				return;
+			}
+			
+      if (p.pro_name != p.pro_name_clone || p.pro_name_ko != p.pro_name_clone_ko) {
         p.loading = true;
         this.$axios({
           method: 'post',
           url: '/a1/update-profession',
           data: {
             seq: p.seq,
-            pro_name: p.pro_name_clone
+            pro_name: p.pro_name_clone,
+						pro_name_ko: p.pro_name_clone_ko
           }
         }).then(() => {
           p.pro_name = p.pro_name_clone;
+					p.pro_name_ko = p.pro_name_clone_ko;
           p.edit = false;
 					p.confirm = false;
           p.loading = false;
@@ -130,6 +159,7 @@ export default {
         dt.forEach(elm => {
           elm.edit = false;
           elm.pro_name_clone = elm.pro_name;
+					elm.pro_name_clone_ko = elm.pro_name_ko;
           elm.loading = false;
         });
         this.professions = data.data.data;
