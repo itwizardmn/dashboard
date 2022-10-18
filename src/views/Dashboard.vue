@@ -112,58 +112,14 @@
 			</el-row>
 		</div>
 
-		<vue-scroll class="table-box card-base card-outline mt-20">
-			<table class="styled striped hover">
-				<thead>
-					<tr>
-						<th>Product</th>
-						<th>Customer</th>
-						<th>Location</th>
-						<th>Amount</th>
-						<th>Status</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="item in gridData" :key="item.id">
-						<td>
-							<div class="item-box item-product">
-								<div class="product-image">
-									<img :src="item.photo" />
-								</div>
-								<div>
-									<h4 class="m-0 mb-5">{{item.product}}</h4>
-									<p class="m-0">{{item.price}} $</p>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="item-box item-customer">
-								<h4 class="m-0 mb-5">{{item.customer}}</h4>
-								<p class="m-0"><a>{{item.email}}</a></p>
-							</div>
-						</td>
-						<td>
-							<div class="item-box item-location">
-								<h4 class="m-0 mb-5">{{item.address}}</h4>
-								<p class="m-0 o-060">{{item.city}}</p>
-							</div>
-						</td>
-						<td>
-							<div class="item-box item-amount">
-								<h4 class="m-0 mb-5">{{item.amount}} $</h4>
-								<p class="m-0 o-060">{{item.qnt}}</p>
-							</div>
-						</td>
-						<td>
-							<div :class="'item-box item-status status-'+item.status">
-								<h4 class="m-0 mb-5">{{item.status}}</h4>
-								<p class="m-0 o-060">{{item.date}}</p>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-        </vue-scroll>
+		<!-- <vue-scroll class="table-box card-base card-outline mt-20">
+			<div class="card-base card-shadow--medium bg-white black-text p-30">
+				<p class="mt-0 mb-30">PERSONAL SKILLS INFORMATION</p>
+				<div style="position: relative;">
+					<bar-chart height="1000px" :data="barData" :max="this.employee.length"></bar-chart>
+				</div>
+			</div>
+    </vue-scroll> -->
 	
 	</div>
 </template>
@@ -179,6 +135,7 @@ export default {
 		return {
 			chart: null,
 			pie: null,
+			skillBar: [],
 			gridData: [],
 			employee: [],
 			professions: [],
@@ -209,6 +166,15 @@ export default {
 		this.getEmployees();
 		this.getProfession();
 		this.initGridData()
+	},
+	computed: {
+		barData() {
+			let arr = [];
+			this.skillBar.forEach(elm => {
+				arr.push([elm.title, elm.total]);
+			});
+			return arr;
+		}
 	},
 	mounted() {
 		window.addEventListener('resize', this.__resizeHanlder)
@@ -307,11 +273,36 @@ export default {
 				this.professions = data.data.data;
 			}
     },
+		checkSkillNameExisted(skill) {
+			let result = false;
+			this.skillBar.forEach(elm => {
+				elm.title === skill.toUpperCase() ? result = elm : null;
+			});
+			
+			return result;
+		},
+		setEmployeeSkillBar() {
+			const profs = ['Вэб хөгжүүлэгч', 'Жава хөгжүүлэгч', 'Ахлах програмист', 'Багийн ахлагч', 'Технологи судалгааны хэлтсийн дарга']
+			this.employee.forEach(elm => {
+				if (profs.includes(elm.pro_name) && elm.skill) {
+					const obj = JSON.parse(elm.skill);
+					obj.forEach(skill => {
+						const res = this.checkSkillNameExisted(skill.programm);
+						if (!res) {
+							this.skillBar.push({ title: skill.programm.toUpperCase(), total: 1});
+						} else {
+							res.total = res.total + 1;
+						}
+					});
+				}
+			});			
+		},
 		async getEmployees() {
 			const data = await this.$useapi('GET', '/v1/employee/employees');
 			if (data) {
 				this.employee = data.data.data;
 				this.setGroupData();
+				this.setEmployeeSkillBar();
 				this.initChart();
 				this.initPie();
 			}

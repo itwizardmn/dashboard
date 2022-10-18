@@ -27,7 +27,7 @@
               </el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :sm="24" :md="12">
+              <el-col :sm="24" :md="8">
                 <el-form-item prop="level">
                   <el-select v-model="career.level" placeholder="Түвшин" style="width: 100%;">
                     <el-option
@@ -39,9 +39,21 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :sm="24" :md="12">
+              <el-col :sm="24" :md="8">
                 <el-form-item prop="salary">
                   <el-input placeholder="Цалин" v-model="career.salary" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :sm="24" :md="8">
+                <el-form-item>
+                  <el-select v-model="career.lang" placeholder="Хэлний сонголт" style="width: 100%;">
+                    <el-option
+                      v-for="(item, index) in language"
+                      :key="item.value + index"
+                      :label="item.text"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -99,10 +111,11 @@ export default {
         salary: '',
         requirement: null,
         role: null,
-        about: null
+        about: null,
+        lang: null
       },
-      workType: ['Бүтэн цагийн', 'Хагас цагийн', 'Зайнаас ажиллах'],
-      levels: ['Мэргэжилтэн', 'Мэргэжил хамаарахгүй', 'Оюутан/Дадлага/'],
+      // workType: ['Бүтэн цагийн', 'Хагас цагийн', 'Зайнаас ажиллах'],
+      // levels: ['Мэргэжилтэн', 'Мэргэжил хамаарахгүй', 'Оюутан/Дадлага/'],
       editorOption1: {
 				theme: 'snow',
         modules: {
@@ -120,7 +133,30 @@ export default {
         jobType: [{required: true, message: 'Төрөл' }],
         level: [{required: true, message: 'Түвшин' }],
         salary: [{required: true, message: 'Цалин' }]
+      },
+      language: [{
+        value: 'MN',
+        text: 'Монгол'
+      }, {
+        value: 'KR',
+        text: 'Солонгос'
+      }]
+    }
+  },
+  computed: {
+    levels () {
+      if (!this.career.lang || this.career.lang === 'MN') {
+        return ['Мэргэжилтэн', 'Мэргэжил хамаарахгүй', 'Оюутан/Дадлага/'];
       }
+
+      return ['전문가', '전공 무관', '대학생/ 실습'];
+    },
+    workType () {
+      if (!this.career.lang || this.career.lang === 'MN') {
+        return ['Бүтэн цагийн', 'Хагас цагийн', 'Зайнаас ажиллах'];
+      }
+
+      return ['풀타임', '파트 타임', '재택근무'];
     }
   },
   created() {
@@ -144,6 +180,7 @@ export default {
         this.requirement = p.requirement;
         this.role = p.roles;
         this.about = p.about;
+        this.career.lang = p.lang;
       } else {
         this.$router.push('/career');
       }      
