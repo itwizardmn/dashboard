@@ -9,6 +9,7 @@
 					<tr>
 						<th>Гарчиг</th>
             <th>Үүсгэсэн огноо</th>
+						<th>Хэл</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -22,6 +23,11 @@
             <td>
 							<div class="item-box item-customer">
 								<h5 class="m-0 o-070">{{item.created_at.substr(0, 10)}}</h5>
+							</div>
+						</td>
+						<td>
+							<div class="item-box item-customer">
+								<el-tag size="mini" :type="item.lang == 'MN' ? 'info' : 'warning'">{{item.lang}}</el-tag>
 							</div>
 						</td>
 						<td align="right">
