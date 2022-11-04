@@ -15,6 +15,7 @@ import EditCareer from '../views/EditCareer';
 import Blog from '../views/Blog';
 import addBlog from '../views/addBlog';
 import feedback from '../views/feedback';
+import banners from '../views/banners';
 
 Vue.use(Router)
 
@@ -34,6 +35,15 @@ const routes = [
     component: Dashboard,
     meta: {
       title: "Хяналтын самбар",
+			layout: layouts.navLeft,
+    }
+  },
+  {
+    path: "/banners",
+    name: "banners",
+    component: banners,
+    meta: {
+      title: "Баннер",
 			layout: layouts.navLeft,
     }
   },

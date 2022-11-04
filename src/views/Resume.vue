@@ -69,7 +69,7 @@
                       <td>{{item.role}}</td>
                       <td>{{item.name}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.birthdate.substr(0, 10)}}</td>
+                      <td>{{item.birthdate?.substr(0, 10)}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -87,8 +87,8 @@
                     <tr v-for="(item, index) in JSON.parse(selectedResume.edu)" :key="index">
                       <td>{{item.school}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.inYear.substr(0, 10)}}</td>
-                      <td>{{item.outYear.substr(0, 10)}}</td>
+                      <td>{{item.inYear?.substr(0, 10)}}</td>
+                      <td>{{item.outYear?.substr(0, 10)}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -124,8 +124,8 @@
                     <tr v-for="(item, index) in JSON.parse(selectedResume.experience)" :key="index">
                       <td>{{item.company}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.inYear.substr(0, 10)}}</td>
-                      <td>{{item.outYear.substr(0, 10)}}</td>
+                      <td>{{item.inYear?.substr(0, 10)}}</td>
+                      <td>{{item.outYear?.substr(0, 10)}}</td>
                       <td>{{item.outReason}}</td>
                     </tr>
                   </tbody>
@@ -205,7 +205,7 @@
 						</td>
             <td>
 							<div class="item-box item-location">
-								<h5 class="m-0 o-070">{{item.birthdate.substr(0, 10)}}</h5>
+								<h5 class="m-0 o-070">{{item.birthdate?.substr(0, 10)}}</h5>
 							</div>
 						</td>
             <td>
@@ -271,7 +271,7 @@
                       <td>{{item.role}}</td>
                       <td>{{item.name}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.birthdate.substr(0, 10)}}</td>
+                      <td>{{item.birthdate?.substr(0, 10)}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -289,8 +289,8 @@
                     <tr v-for="(item, index) in JSON.parse(selectedResume.edu)" :key="index">
                       <td>{{item.school}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.inYear.substr(0, 10)}}</td>
-                      <td>{{item.outYear.substr(0, 10)}}</td>
+                      <td>{{item.inYear?.substr(0, 10)}}</td>
+                      <td>{{item.outYear?.substr(0, 10)}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -327,8 +327,8 @@
                     <tr v-for="(item, index) in JSON.parse(selectedResume.experience)" :key="index">
                       <td>{{item.company}}</td>
                       <td>{{item.profession}}</td>
-                      <td>{{item.inYear.substr(0, 10)}}</td>
-                      <td>{{item.outYear.substr(0, 10)}}</td>
+                      <td>{{item.inYear?.substr(0, 10)}}</td>
+                      <td>{{item.outYear?.substr(0, 10)}}</td>
                       <td>{{item.outReason}}</td>
                     </tr>
                   </tbody>
@@ -560,6 +560,7 @@ export default {
       });
     },
     showProperty(property) {      
+      console.log('===', property);
       this.selectedResume = property;
       this.dialog.resume = true;
     }
