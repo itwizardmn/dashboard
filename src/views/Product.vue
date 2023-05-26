@@ -180,7 +180,7 @@ export default {
     },
     saveProperty() {
       const fd = new FormData();
-      fd.append('file', this.addProject.selectedFile, this.addProject.selectedFile.name);
+      fd.append('image', this.addProject.selectedFile, this.addProject.selectedFile.name);
       fd.append('projectName', this.addProject.projectName);
       fd.append('projectType', this.addProject.projectType);
       fd.append('relatedUrl', this.addProject.relatedUrl);
